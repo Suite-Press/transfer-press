@@ -1,0 +1,11 @@
+{
+  "name": "your-vendor/transfer-press",
+  "description": "Boilerplate for transfer-press",
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "TransferPress\\": "app/"
+    }
+  },
+  "require": {}
+}
