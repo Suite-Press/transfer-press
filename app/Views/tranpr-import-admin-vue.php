@@ -3,4 +3,4 @@ if ( ! defined('ABSPATH')) {
     exit;
 }
 ?>
-<div id="transfer-press-import-app"></div>
+<div id="tranpr-import-dashboard"></div>

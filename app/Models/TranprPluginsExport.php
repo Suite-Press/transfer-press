@@ -3,7 +3,7 @@ namespace TransferPress\Models;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-class PluginsFilesExport{
+class TranprPluginsExport{
     public function getInstalledPlugins(): array
     {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';

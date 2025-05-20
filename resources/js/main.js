@@ -23,11 +23,11 @@ function mountApp(component, selector) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('transfer-press-export-app')) {
-        mountApp(ExportAdminVue, '#transfer-press-export-app')
-    } else if (document.getElementById('transfer-press-import-app')) {
-        mountApp(ImportAdminVue, '#transfer-press-import-app')
+    if (document.getElementById('tranpr-export-dashboard')) {
+        mountApp(ExportAdminVue, '#tranpr-export-dashboard')
+    } else if (document.getElementById('tranpr-import-dashboard')) {
+        mountApp(ImportAdminVue, '#tranpr-import-dashboard')
     } else {
-        mountApp(ExportAdminVue, '#my-vue-app')
+        mountApp(ExportAdminVue, '#tranpr-export-dashboard')
     }
 })
