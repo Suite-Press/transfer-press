@@ -1,7 +1,7 @@
 <?php
 namespace TransferPress\Services\Helpers;
 
-class FileSystemHelper{
+class TranprFileSystemHelper{
     public static function getFilesystem() {
         global $wp_filesystem;
 

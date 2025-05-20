@@ -5,6 +5,11 @@
   </div>
 
 </template>
+<script setup>
+defineProps({
+  loading: Boolean
+})
+</script>
 <style>
 
 .progress-wrapper {

@@ -1,10 +1,10 @@
 <?php
 namespace TransferPress\Http\Controllers;
 
-use TransferPress\Models\PluginsFilesExport;
-use TransferPress\Services\PluginsFilesExportService;
-use TransferPress\Services\Helpers\FileSystemHelper;
-class PluginsFilesExportController{
+use TransferPress\Models\TranprPluginsExport;
+use TransferPress\Services\TranprPluginsExportService;
+use TransferPress\Services\Helpers\TranprFileSystemHelper;
+class TranprPluginsExportController{
     public function __construct(){
         add_action('wp_ajax_plugins_transfer_press_list', [$this, 'getPluginList']);
         add_action('wp_ajax_plugins_transfer_press_export', [$this, 'getExportPlugin']);
@@ -12,44 +12,37 @@ class PluginsFilesExportController{
     }
     public function getPluginList(): void
     {
-        $model = new PluginsFilesExport();
+        $model = new TranprPluginsExport();
         wp_send_json($model->getInstalledPlugins());
     }
     public function getPluginDetails(): void {
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => 'Unauthorized']);
         }
-        check_ajax_referer('wp_transfer_press_setting', 'nonce');
-//        $slug = sanitize_text_field($_GET['plugin'] ?? '');
+        check_ajax_referer('tranpr_setting', 'nonce');
         $slug = isset($_GET['plugin']) ? sanitize_text_field(wp_unslash($_GET['plugin'])) : '';
         if (!$slug) {
             wp_send_json_error(['message' => 'Missing plugin slug']);
         }
-
-        $model = new PluginsFilesExport();
+        $model = new TranprPluginsExport();
         $details = $model->getPluginDetails($slug);
-
         if (empty($details)) {
             wp_send_json_error(['message' => 'Plugin not found']);
         }
-
         wp_send_json_success(['plugin' => $details]);
     }
     public function getExportPlugin(): void
     {
-        check_ajax_referer('wp_transfer_press_setting', 'nonce');
-
+        check_ajax_referer('tranpr_setting', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => 'Unauthorized']);
         }
-
-//        $plugin = sanitize_text_field($_POST['plugin']);
         $plugin = isset($_POST['plugin']) ? sanitize_text_field(wp_unslash($_POST['plugin'])) : '';
         if (!$plugin) {
             wp_send_json_error(['message' => 'Missing plugin slug.']);
         }
 
-        $service = new PluginsFilesExportService();
+        $service = new TranprPluginsExportService();
         $fileUrl = $service->exportPluginFiles($plugin);
         if (!$fileUrl) {
             wp_send_json_error(['message' => 'Failed to generate ZIP.']);
@@ -58,8 +51,7 @@ class PluginsFilesExportController{
         $uploadDir = wp_upload_dir();
         $filePath = str_replace($uploadDir['baseurl'], $uploadDir['basedir'], $fileUrl);
 
-        $fileSystem = FileSystemHelper::getFilesystem();
-
+        $fileSystem = TranprFileSystemHelper::getFilesystem();
         if (!file_exists($filePath) || !is_readable($filePath)) {
             wp_send_json_error(['message' => 'ZIP file not found or not readable.']);
         }

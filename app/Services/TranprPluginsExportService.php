@@ -1,18 +1,18 @@
 <?php
 namespace TransferPress\Services;
 
-use TransferPress\Services\Helpers\FileSystemHelper;
+use TransferPress\Services\Helpers\TranprFileSystemHelper;
 use ZipArchive;
-use TransferPress\Models\PluginsFilesExport;
-class PluginsFilesExportService{
+use TransferPress\Models\TranprPluginsExport;
+class TranprPluginsExportService{
 
     protected $fs;
     public function __construct() {
-        $this->fs = FileSystemHelper::getFilesystem();
+        $this->fs = TranprFileSystemHelper::getFilesystem();
     }
     public function exportPluginFiles(string $pluginSlug): bool|string
     {
-        $model = new PluginsFilesExport();
+        $model = new TranprPluginsExport();
         $pluginPath = $model->getPluginPath($pluginSlug);
 
         $uploadDir = wp_upload_dir();

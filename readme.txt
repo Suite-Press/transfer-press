@@ -99,15 +99,23 @@ https://github.com/Suite-Press/transfer-press
    ```terminal
    composer install
    ```
-
 2. **Dump autoload files**
    Run:
    ```terminal
    composer dump-autoload
    ```
-
 3. **Install Node modules**
    Run:
    ```terminal
    npm install
+   ```
+4. **Run Dev Mode**
+   Run:
+   ```terminal
+   npm run dev
+   ```
+5. **Run Build Mode**
+   Run:
+   ```terminal
+   npm run build
    ```
