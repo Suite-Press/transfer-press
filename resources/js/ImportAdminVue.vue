@@ -1,34 +1,42 @@
 <template>
-  <div class="plugins-transfer-press">
+  <div class="plugins-transfer-press" style="margin-left: -20px!important;">
     <TitleVue />
+    <div class="tranpr-docs-button">
+      <a target="_blank" class="" href="https://suitepress.org/docs/how-to-import-and-activate-any-plugin-with-one-click-using-transferpress/">
+        <span class="dashicons dashicons-media-document"></span>
+        View Documentation		</a>
+    </div>
+    <div style="padding: 0 2rem;">
 
-    <div class="main-grid">
-      <div class="import-container">
-        <form @submit.prevent="uploadPlugin" enctype="multipart/form-data">
-          <div class="form-group">
-            <label class="upload-label">Select Plugin (.zip)</label>
-            <input type="file" accept=".zip" @change="handleFile" class="file-input" />
+      <div class="tranpr-main-grid">
+        <div class="tranpr-import-container">
+          <form @submit.prevent="uploadPlugin" enctype="multipart/form-data">
+            <div class="tranpr-form-group">
+              <label class="upload-label">Select Plugin (.zip)</label>
+              <input type="file" accept=".zip" @change="handleFile" class="file-input" />
+            </div>
+
+            <button type="submit" :disabled="loading" class="tranpr-submit-button">
+              <span v-if="!loading">Import Plugin</span>
+              <span v-else>Importing...</span>
+            </button>
+
+            <ProgressVue :loading="loading"/>
+          </form>
+
+          <div v-if="pluginUrl" class="tranpr-plugin-url-wrapper">
+            <a :href="pluginUrl" target="_blank" class="tranpr-info-text">Go to Plugins Page →</a>
           </div>
+        </div>
 
-          <button type="submit" :disabled="loading" class="submit-button">
-            <span v-if="!loading">Import Plugin</span>
-            <span v-else>Importing...</span>
-          </button>
-
-          <ProgressVue :loading="loading"/>
-        </form>
-
-        <div v-if="pluginUrl" class="plugin-url-wrapper">
-          <a :href="pluginUrl" target="_blank" class="info-text">Go to Plugins Page →</a>
+        <div v-if="statusMessages.length" class="tranpr-status-log">
+          <h3 class="tranpr-status-heading">Status Log</h3>
+          <div v-for="(msg, index) in statusMessages" :key="index" class="tranpr-status-line">
+            {{ msg }}
+          </div>
         </div>
       </div>
 
-      <div v-if="statusMessages.length" class="status-log">
-        <h3 class="status-heading">Status Log</h3>
-        <div v-for="(msg, index) in statusMessages" :key="index" class="status-line">
-          {{ msg }}
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -125,20 +133,8 @@ function uploadPlugin() {
   xhr.send(formData)
 }
 </script>
-
-
 <style scoped>
-
-.plugins-transfer-press {
-  padding: 2rem;
-  background-color: #f1f5f9;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.main-grid {
+.tranpr-main-grid {
   display: flex;
   gap: 2rem;
   justify-content: left;
@@ -149,8 +145,8 @@ function uploadPlugin() {
   flex: 1 1 450px;
 }
 
-.import-container,
-.status-log {
+.tranpr-import-container,
+.tranpr-status-log {
   flex: 1 1 450px;
   background: #ffffff;
   padding: 2rem;
@@ -172,7 +168,7 @@ function uploadPlugin() {
   border-radius: 8px;
   width: 100%;
 }
-.submit-button {
+.tranpr-submit-button {
   padding: 0.75rem 1.8rem;
   background-color: #008080;
   color: #fff;
@@ -185,18 +181,18 @@ function uploadPlugin() {
   transition: background-color 0.3s ease;
   margin-top: 1rem;
 }
-.submit-button:hover {
+.tranpr-submit-button:hover {
   background-color: #ff8c00;
 }
-.submit-button:disabled {
+.tranpr-submit-button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
 }
-.plugin-url-wrapper {
+.tranpr-plugin-url-wrapper {
   margin-top: 2rem;
   text-align: center;
 }
-.info-text {
+.tranpr-info-text {
   background: #3c434a;
   padding: 0.6rem 1.2rem;
   color: white;
@@ -206,16 +202,16 @@ function uploadPlugin() {
   transition: background 0.3s ease;
   display: inline-block;
 }
-.info-text:hover {
+.tranpr-info-text:hover {
   background: #008080;
 }
-.status-heading {
+.tranpr-status-heading {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 1rem;
   color: #333;
 }
-.status-line {
+.tranpr-status-line {
   background-color: #f1f5f9;
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;

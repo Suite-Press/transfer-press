@@ -4,6 +4,7 @@ import 'vue-toastification/dist/index.css'
 
 import ExportAdminVue from "./ExportAdminVue.vue"
 import ImportAdminVue from "./ImportAdminVue.vue"
+import SupportAdminVue from "./SupportAdminVue.vue"
 
 const toastOptions = {
     position: POSITION.BOTTOM_RIGHT,
@@ -27,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mountApp(ExportAdminVue, '#tranpr-export-dashboard')
     } else if (document.getElementById('tranpr-import-dashboard')) {
         mountApp(ImportAdminVue, '#tranpr-import-dashboard')
+    } else if (document.getElementById('tranpr-support-dashboard')) {
+        mountApp(SupportAdminVue, '#tranpr-support-dashboard')
     } else {
         mountApp(ExportAdminVue, '#tranpr-export-dashboard')
     }

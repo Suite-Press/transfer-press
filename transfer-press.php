@@ -9,7 +9,7 @@ if ( ! defined('ABSPATH')) {
  * Plugin Name:         Transfer Press
  * Plugin URI:          https://wordpress.org/plugins/transfer-press
  * Description:         Transfer Press - is an advanced migration management tools for WordPress Plugins
- * Version:             1.0.0
+ * Version:             2.0.0
  * Requires at least:   5.2
  * Requires PHP:        7.2
  * Contributor:         suitepress

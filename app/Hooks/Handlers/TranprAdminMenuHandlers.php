@@ -19,7 +19,8 @@ class TranprAdminMenuHandlers {
         // Only load assets on our plugin page
         if (
             strpos($hook, 'tranpr-export') === false &&
-            strpos($hook, 'tranpr-import') === false
+            strpos($hook, 'tranpr-import') === false &&
+            strpos($hook, 'tranpr-support') === false
         ) {
             return;
         }
@@ -54,6 +55,14 @@ class TranprAdminMenuHandlers {
             "tranpr-import",
             [$this, 'tranpr_render_import_dashboard']
         );
+        add_submenu_page(
+            "tranpr-export",
+            __("Support","transfer-press"),
+            __("Support","transfer-press"),
+            "manage_options",
+            "tranpr-support",
+            [$this, 'tranpr_render_support_dashboard']
+        );
     }
 
     public function tranpr_get_menu_icon(): string
@@ -70,6 +79,10 @@ class TranprAdminMenuHandlers {
     public function tranpr_render_import_dashboard(): void
     {
         include_once TRANPR_PATH. '/app/Views/tranpr-import-admin-vue.php';
+    }
+    public function tranpr_render_support_dashboard(): void
+    {
+        include_once TRANPR_PATH. '/app/Views/tranpr-support-admin-vue.php';
     }
     public function tranpr_enqueue_assets(): void
     {
