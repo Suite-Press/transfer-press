@@ -1,65 +1,85 @@
 <template>
-  <div class="plugins-transfer-press">
+  <div class="plugins-transfer-press" style="margin-left: -20px!important;">
     <TitleVue />
+    <div class="tranpr-docs-button">
+      <a target="_blank" class="" href="https://suitepress.org/docs/how-to-export-any-plugin-from-wordpress-using-transferpress/">
+        <span class="dashicons dashicons-media-document"></span>
+        View Documentation		</a>
+    </div>
+    <div style="padding: 0 2rem;">
+      <div class="tranpr-grid">
+        <div class="tranpr-card">
+          <h3 class="tranpr-card-title">Export Plugin</h3>
+          <p class="tranpr-card-desc">
+            Select a plugin from the list and export it as a
+            <span style="color: green"> ZIP file.</span>
+          </p>
 
-    <div class="grid">
+          <div class="tranpr-form-group">
+            <label for="export-select">Choose Plugin →</label>
 
-      <div class="card">
-        <h3 class="card-title">Export Plugin</h3>
-        <p class="card-desc">Select a plugin from the list and export it as a ZIP file.</p>
+            <Multiselect
+                v-model="selected"
+                :options="pluginOptions"
+                placeholder="Choose a Plugin"
+            />
 
-        <div class="form-group">
-          <label for="export-select">Choose Plugin → </label>
-          <select id="export-select" v-model="selected">
-            <option disabled value="">Choose a Plugin</option>
-            <option v-for="(plugin, slug) in plugins" :key="slug" :value="slug">
-              {{ plugin.Name }}
-            </option>
-          </select>
+          </div>
+
+          <button class="action-button" @click="exportPlugin" :disabled="!selected">Export Plugin</button>
+
+          <div v-if="exporting" class="tranpr-progress-container">
+            <div class="tranpr-progress-bar" :style="{ width: progress + '%' }"></div>
+            <span class="tranpr-progress-text">{{ progress }} %</span>
+          </div>
         </div>
 
-        <button class="action-button" @click="exportPlugin" :disabled="!selected">Export Plugin</button>
-
-        <div v-if="exporting" class="progress-container">
-          <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-          <span class="progress-text">{{ progress }} %</span>
+        <div class="tranpr-card">
+          <div v-if="loadingDetails">
+            <p class="tranpr-card-desc">Loading plugin details...</p>
+          </div>
+          <div v-else-if="pluginDetails">
+            <h2>{{ pluginDetails.name }} <small>(v{{ pluginDetails.version }})</small></h2>
+            <p class="tranpr-card-desc"><strong>Author:</strong> {{ pluginDetails.author }}</p>
+            <p class="tranpr-card-desc"><strong>Description:</strong> {{ pluginDetails.description }}</p>
+            <p class="tranpr-card-desc"><strong>Path:</strong> {{ pluginDetails.path }}</p>
+            <p class="tranpr-card-desc"><strong>Size:</strong> {{ pluginDetails.size }}</p>
+            <p class="tranpr-card-desc"><strong>Status:</strong> {{ pluginDetails.active ? 'Active' : 'Inactive' }}</p>
+          </div>
+          <div v-else>
+            <p class="tranpr-card-desc">Details of the plugin will be displayed here.</p>
+          </div>
         </div>
       </div>
-
-      <div class="card">
-        <div v-if="loadingDetails">
-          <p class="card-desc">Loading plugin details...</p>
-        </div>
-        <div v-else-if="pluginDetails">
-          <h2>{{ pluginDetails.name }} <small>(v{{ pluginDetails.version }})</small></h2>
-          <p class="card-desc"><strong>Author:</strong> {{ pluginDetails.author }}</p>
-          <p class="card-desc"><strong>Description:</strong> {{ pluginDetails.description }}</p>
-          <p class="card-desc"><strong>Path:</strong> {{ pluginDetails.path }}</p>
-          <p class="card-desc"><strong>Size:</strong> {{ pluginDetails.size }}</p>
-          <p class="card-desc"><strong>Status:</strong> {{ pluginDetails.active ? 'Active' : 'Inactive' }}</p>
-        </div>
-        <div v-else>
-          <p class="card-desc">Details of the plugin will be displayed here.</p>
-        </div>
-      </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import TitleVue from "./Components/TitleVue.vue"
 import { useToast } from 'vue-toastification'
-const toast = useToast()
+import Multiselect from "@vueform/multiselect";
+import '@vueform/multiselect/themes/default.css'
 
+const toast = useToast()
 const selected = ref('')
 const plugins = ref({})
 const pluginDetails = ref(null)
-
 const loadingDetails = ref(false)
 const exporting = ref(false)
 const progress = ref(0)
+
+const selectedPlugin = computed(() => {
+  return plugins.value[selected.value] || null
+})
+
+const pluginOptions = computed(() => {
+  return Object.entries(plugins.value).map(([slug, plugin]) => ({
+    label: plugin.Name,
+    value: slug,
+  }))
+})
 
 onMounted(async () => {
   const res = await fetch(ajaxurl + '?action=plugins_transfer_press_list')
@@ -134,41 +154,32 @@ const exportPlugin = async () => {
   xhr.send(formData)
 }
 </script>
-
-
-<style scoped>
+<style>
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-h2, span, p, h1, h3, h4, h5, h6, label, select, button, .card-desc {
+h2, span, p, h1, h3, h4, h5, h6, label, select, button, .tranpr-card-desc {
   font-family: "Open Sans", sans-serif;
 }
-
-.plugins-transfer-press {
-  padding: 2rem;
-  background-color: #f9fafc;
-  min-height: 100vh;
-}
-
-.grid {
+.tranpr-grid {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
   justify-content: space-between;
 }
 
-.card {
+.tranpr-card {
   background: #ffffff;
   border-radius: 5px;
   box-shadow: rgb(2 128 128 / 15%) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
   padding: 2rem;
-  flex: 1 1 45%;
+  flex: 1 1 40%;
   min-width: 300px;
   transition: transform 0.2s ease;
   border: none;
 }
 
-.card:hover {
+.tranpr-card:hover {
   transform: translateY(-4px);
 }
 .wp-core-ui select:focus {
@@ -176,30 +187,30 @@ h2, span, p, h1, h3, h4, h5, h6, label, select, button, .card-desc {
   box-shadow: rgba(0, 0, 0, 0.20) 0px 25px 10px -20px;
   color: #028080;
 }
-.card-title {
+.tranpr-card-title {
   font-size: 1.3rem;
   color: #2d3748;
   margin-bottom: 0.5rem;
 }
 
-.card-desc {
+.tranpr-card-desc {
   color: #6b7280;
   margin-bottom: .8rem;
   font-size: 16px;
 }
 
-.form-group {
+.tranpr-form-group {
   margin-bottom: 1.5rem;
 }
 
-label {
+.tranpr-form-group label {
   display: block;
   margin-bottom: 0.4rem;
   font-weight: 600;
   color: #374151;
 }
 
-select{
+.tranpr-form-group select{
   width: 100%;
   padding: 0.55rem;
   font-size: 1rem;
@@ -230,18 +241,17 @@ select{
   background-color: #008080;
 }
 
-/* Responsive layout for small screens */
 @media (max-width: 768px) {
-  .grid {
+  .tranpr-grid {
     flex-direction: column;
   }
-  .card {
+  .tranpr-card {
     flex: 1 1 100%;
   }
 }
 
 
-.progress-container {
+.tranpr-progress-container {
   position: relative;
   width: 100%;
   height: 35px;
@@ -252,14 +262,14 @@ select{
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.progress-bar {
+.tranpr-progress-bar {
   height: 100%;
   background: linear-gradient(to right, #009d1b, #028080);
   width: 0%;
   transition: width 0.4s ease-in-out;
   border-radius: 10px 0 0 10px;
 }
-.progress-text {
+.tranpr-progress-text {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -284,4 +294,27 @@ select{
 .error {
   color: red;
 }
+.multiselect-option.is-selected {
+  background: #008080;
+  color: white;
+}
+.tranpr-docs-button a {
+  background: white;
+  padding: .7rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  color: #028080;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.tranpr-docs-button {
+  margin: 1.5rem 2rem;
+  text-align: end;
+}
+.tranpr-docs-button a:hover {
+  color: white;
+  background: #028080;
+  transition: all 0.5s ease;
+}
+
 </style>

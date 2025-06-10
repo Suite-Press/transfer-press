@@ -12,6 +12,7 @@
     "vue": "^3.4.0"
   },
   "dependencies": {
+    "@vueform/multiselect": "^2.6.11",
     "vue-toastification": "^2.0.0-rc.5"
   }
 }
